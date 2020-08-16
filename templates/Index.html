@@ -1,0 +1,32 @@
+{{define "content"}}
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Type</th>
+            <th scope="col">Address</th>
+            <th scope="col">Phone</th>
+            <th scope="col">Time</th>
+            <th scope="col">Notes</th>
+            <th scope="col">Files</th>
+        </tr>
+        </thead>
+        <tbody>
+    {{range .data}}
+      <tr>
+          <td>{{.ID}}</td>
+          <td>{{.Lastname}} {{.Firstname}}</td>
+          <td>{{.OrderType}}</td>
+          <td>{{.Address}}</td>
+          <td>{{.Phone}}<br>{{.Phone2}}</td>
+          <td>{{.FormattedDate}}</td>
+          <td>{{.Notes}}</td>
+          <td>{{range .Files}}
+              {{.Name}}<br>
+              {{end}}
+          </td>
+      </tr>
+     {{end}}
+        </tbody>
+{{end}}

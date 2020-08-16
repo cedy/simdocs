@@ -17,12 +17,12 @@ func GetRecord(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": record})
 }
 
-// GetAllRecords returns all records
+// GetAllRecords renders page with all records
 func GetAllRecords(c *gin.Context) {
 	var records []models.Record
 	models.DB.Find(&records)
 
-	c.JSON(http.StatusOK, gin.H{"data": records})
+	c.HTML(http.StatusOK, "index", gin.H{"data": records})
 }
 
 // CreateRecord creates new record
