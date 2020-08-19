@@ -1,7 +1,7 @@
 {{define "content"}}
-    <table class="table">
+    <table class="table table-striped">
         <thead>
-        <tr>
+        <tr class="text-center">
             <th scope="col">ID</th>
             <th scope="col">Name</th>
             <th scope="col">Type</th>
@@ -13,20 +13,27 @@
         </tr>
         </thead>
         <tbody>
-    {{range .data}}
-      <tr>
-          <td>{{.ID}}</td>
-          <td>{{.Lastname}} {{.Firstname}}</td>
-          <td>{{.OrderType}}</td>
-          <td>{{.Address}}</td>
-          <td>{{.Phone}}<br>{{.Phone2}}</td>
-          <td>{{.FormattedDate}}</td>
-          <td>{{.Notes}}</td>
-          <td>{{range .Files}}
-              {{.Name}}<br>
+            {{$ff := .files}}
+    {{range $record := .data}}
+    <tr id="{{$record.ID}}" class="text-center">
+        <td><b>{{$record.ID}}</b>
+              <br /> 
+              <a href="/records/edit/{{$record.ID}}"><button>E</button></a>
+              <button onclick="deleteRecord({{$record.ID}})">X</button>
+
+          </td>
+          <td>{{$record.Lastname}} {{$record.Firstname}}</td>
+          <td>{{$record.OrderType}}</td>
+          <td>{{$record.Address}}</td>
+          <td>{{$record.Phone}}<br>{{$record.Phone2}}</td>
+          <td>{{$record.FormattedDate}}</td>
+          <td>{{$record.Notes}}</td>
+          <td>
+              {{range $f := index $ff $record.ID}}
+              <a href="{{$f.Path}}">{{slice $f.Name 0 20}}...</a><br />
               {{end}}
           </td>
       </tr>
-     {{end}}
+      {{end}}
         </tbody>
 {{end}}

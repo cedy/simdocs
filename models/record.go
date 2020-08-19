@@ -9,24 +9,21 @@ import (
 //Record struct that is the representation of record model
 type Record struct {
 	gorm.Model
-	Lastname  string    `json:"Lastname" binding:"required" gorm:"index:add;size:255"`
-	Firstname string    `json:"Firstname" binding:"required" gorm:"size:255"`
-	OrderType string    `json:"OrderType" binding:"required" gorm:"size:255"`
-	Address   string    `json:"Address"`
-	Phone     string    `json:"Phone" binding:"required" `
-	Phone2    string    `json:"Phone2"`
-	OrderTime time.Time `json:"OrderTime" gorm:"default:current_timestamp"`
-	Notes     string    `json:"Notes" gorm:"size:1000"`
-	// TODO: handle files after POC
-	Files []File
+	Lastname  string    `form:"Lastname" json:"Lastname" binding:"required" gorm:"index:add;size:255"`
+	Firstname string    `form:"Firstname" json:"Firstname" binding:"required" gorm:"size:255"`
+	OrderType string    `form:"OrderType" json:"OrderType" binding:"required" gorm:"size:255"`
+	Address   string    `form:"Address" json:"Address"`
+	Phone     string    `form:"Phone" json:"Phone" binding:"required" `
+	Phone2    string    `form:"Phone2" json:"Phone2"`
+	OrderTime time.Time `form:"OrderTime" json:"OrderTime" time_format:"2006-01-02" gorm:"default:current_timestamp"`
+	Notes     string    `form:"Notes" json:"Notes" gorm:"size:1000"`
 }
 
 //File is representation of file in database
 type File struct {
 	ID       uint `gorm:"primary_key"`
 	Name     string
-	Data     []byte
-	Type     string
+	Path     string
 	RecordID uint
 }
 

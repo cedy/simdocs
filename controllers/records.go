@@ -1,7 +1,9 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/cedy/simdocs/models"
 	"github.com/gin-gonic/gin"
@@ -20,22 +22,53 @@ func GetRecord(c *gin.Context) {
 // GetAllRecords renders page with all records
 func GetAllRecords(c *gin.Context) {
 	var records []models.Record
+	var files []models.File
 	models.DB.Find(&records)
-
-	c.HTML(http.StatusOK, "index", gin.H{"data": records})
+	//TODO: can we do better
+	models.DB.Find(&files)
+	recordIDToFile := make(map[uint][]models.File)
+	for _, file := range files {
+		recordIDToFile[file.RecordID] = append(recordIDToFile[file.RecordID], file)
+	}
+	c.HTML(http.StatusOK, "index", gin.H{"title": "All Records", "data": records, "files": recordIDToFile})
 }
 
 // CreateRecord creates new record
 func CreateRecord(c *gin.Context) {
 	var record models.Record
-	if err := c.ShouldBindJSON(&record); err != nil {
+	c.ShouldBind(&record)
+
+	if err := c.ShouldBind(&record); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	// TODO: handle files after POC
+	form, err := c.MultipartForm()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 	models.DB.Create(&record)
+	// Write attached files to disk and save info about in in DB
+	files := form.File["Files"]
+	for _, file := range files {
+		var f models.File
+		localPath := fmt.Sprintf("docs/%d_%s", time.Now().Unix(), file.Filename)
+		if err := c.SaveUploadedFile(file, localPath); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		f.Name = file.Filename
+		f.Path = localPath
+		f.RecordID = record.ID
+		models.DB.Create(&f)
+	}
+
 	c.JSON(http.StatusOK, gin.H{"data": record})
+}
+
+//CreateRecordForm renders create record form
+func CreateRecordForm(c *gin.Context) {
+	c.HTML(http.StatusOK, "create", gin.H{})
 }
 
 //GetRecordsSearch returns record(s) filtered by querying params*
@@ -51,6 +84,16 @@ func GetRecordsSearch(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": records})
+}
+
+//EditRecordForm renders edit record form
+func EditRecordForm(c *gin.Context) {
+	var record models.Record
+	if err := models.DB.Where("id = ?", c.Param("id")).First(&record).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
+		return
+	}
+	c.HTML(http.StatusOK, "edit", gin.H{"data": record})
 }
 
 //UpdateRecord updates record at the given ID
