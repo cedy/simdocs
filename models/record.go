@@ -27,7 +27,7 @@ type File struct {
 	RecordID uint
 }
 
-//FormattedDate return string representating of OrderTime in YYYY-MM-DD format
-func (r *Record) FormattedDate() string {
+//FormatedDate return string representating of OrderTime in YYYY-MM-DD format
+func (r Record) FormatedDate() string {
 	return r.OrderTime.Format("2006-01-02")
 }

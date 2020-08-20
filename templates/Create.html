@@ -38,10 +38,13 @@
         <input type="text" name="Phone2" class="form-control" id="inputPhone2">
     </div>
   </div>
-    <div class="form-group">
-    <label for="inputFiles">Documents</label>
-    <input type="file" name="Files" multiple="multiple" class="form-control-file" id="inputFiles">
-  </div>
+
+<label class="btn btn-primary" for="inputFiles">
+    <input id="inputFiles" name="Files" multiple type="file" style="display:none" 
+    onchange="listSelectedFiles()">
+   <i class="fa fa-cloud-upload"></i> Add file(s).. 
+</label>
+<span class='label label-info' id="upload-file-info"></span>
   <div class="form-group">
     <label for="inputNotes">Notes</label>
     <textarea class="form-control" name="Notes" id="inputNotes" rows="2"></textarea>

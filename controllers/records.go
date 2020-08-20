@@ -93,7 +93,12 @@ func EditRecordForm(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
 		return
 	}
-	c.HTML(http.StatusOK, "edit", gin.H{"data": record})
+	var files []models.File
+	err := models.DB.Where("record_id = ?", record.ID).Find(&files).Error
+	if err != nil {
+		files = append(files, models.File{Name: "error getting files, please try reloading page."})
+	}
+	c.HTML(http.StatusOK, "edit", gin.H{"data": record, "files": files})
 }
 
 //UpdateRecord updates record at the given ID

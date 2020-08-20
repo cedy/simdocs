@@ -26,12 +26,17 @@
           <td>{{$record.OrderType}}</td>
           <td>{{$record.Address}}</td>
           <td>{{$record.Phone}}<br>{{$record.Phone2}}</td>
-          <td>{{$record.FormattedDate}}</td>
+          <td>{{$record.FormatedDate}}</td>
           <td>{{$record.Notes}}</td>
           <td>
               {{range $f := index $ff $record.ID}}
-              <a href="{{$f.Path}}">{{slice $f.Name 0 20}}...</a><br />
-              {{end}}
+              <a href="{{$f.Path}}">
+                  {{if lt (len $f.Name) 20}}
+                    {{$f.Name}}</a><br />
+                  {{else}}
+                    {{slice $f.Name 0 20}}...</a><br />
+                  {{end}}
+                {{end}}
           </td>
       </tr>
       {{end}}
