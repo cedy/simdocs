@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/cedy/simdocs/models"
@@ -104,13 +105,39 @@ func EditRecordForm(c *gin.Context) {
 //UpdateRecord updates record at the given ID
 func UpdateRecord(c *gin.Context) {
 	var record models.Record
-	if err := models.DB.Where("id = ?", c.Param("id")).First(&record).Error; err != nil {
+
+	if err := models.DB.Where("id = ?", c.Request.FormValue("id")).First(&record).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
 		return
 	}
 	var updatedRecord models.Record
-	c.ShouldBindJSON(&updatedRecord)
-	models.DB.Model(&record).Updates(updatedRecord)
+	c.ShouldBind(&updatedRecord)
+
+	form, err := c.MultipartForm()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if models.DB.Model(&record).Updates(updatedRecord).Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "DB error"})
+		return
+	}
+
+	files := form.File["Files"]
+	for _, file := range files {
+		var f models.File
+		localPath := fmt.Sprintf("docs/%d_%s", time.Now().Unix(), file.Filename)
+		if err := c.SaveUploadedFile(file, localPath); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		f.Name = file.Filename
+		f.Path = localPath
+		f.RecordID = record.ID
+		models.DB.Create(&f)
+	}
+	c.JSON(http.StatusOK, gin.H{"data": updatedRecord})
 }
 
 //DeleteRecord deletes record at the given ID
@@ -120,7 +147,28 @@ func DeleteRecord(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
 		return
 	}
-	models.DB.Delete(&record)
 
-	c.JSON(http.StatusOK, gin.H{"data": true})
+	if models.DB.Delete(&record).Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "DB error!"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"deleted": true})
+}
+
+//DeleteFile deletes file and DB record for given FileID
+func DeleteFile(c *gin.Context) {
+	var file models.File
+	if err := models.DB.Where("id = ?", c.Param("id")).First(&file).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "File doesn't exist!"})
+		return
+	}
+	// delete file record from DB and physical record from disk
+	if models.DB.Delete(&file).Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "DB error!"})
+		return
+	}
+	// TODO: rethink this behavior
+	// ignore an error if file can't be deleted for any reason.
+	_ = os.Remove(file.Path)
+	c.JSON(http.StatusOK, gin.H{"deleted": true})
 }

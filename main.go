@@ -33,9 +33,9 @@ func main() {
 	r.POST("/records/create", controllers.CreateRecord)
 	r.GET("/records/search", controllers.GetRecordsSearch)
 	r.GET("/records/edit/:id", controllers.EditRecordForm)
-	r.PATCH("/records/edit/:id", controllers.UpdateRecord)
+	r.PUT("/records/edit", controllers.UpdateRecord)
 	r.DELETE("/records/:id", controllers.DeleteRecord)
-
+	r.DELETE("/files/:id", controllers.DeleteFile)
 	r.Run()
 
 }

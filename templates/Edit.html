@@ -1,5 +1,6 @@
 {{define "content"}}
-<form class="container" action="update" method="POST" enctype="multipart/form-data">
+<form class="container" id="editForm" onsubmit="editForm(event.preventDefault())">
+    <input type="hidden" name="id" value="{{.data.ID}}" />
       <div class="form-row">
     <div class="form-group col-md-5">
       <label for="inputFirstname">Firstname</label>
@@ -45,14 +46,14 @@
 </label>
 <span class='label label-info' id="upload-file-info">
     {{range .files}}
-    <br /><i>{{.Name}}</i>
+    <span id="{{.ID}}"><br />{{.Name}}<a href="javascript:deleteFile({{.ID}});"><i class="fa fa-trash" aria-hidden="true"></i></a></span>
     {{end}}
 </span>
   <div class="form-group">
       <br />
     <label for="inputNotes">Notes</label>
-    <textarea class="form-control" name="Notes" id="inputNotes" rows="2" value="{{.data.Notes}}"></textarea>
+    <textarea class="form-control" name="Notes" id="inputNotes" rows="2">{{.data.Notes}}</textarea>
   </div>
-  <button type="submit" class="btn btn-primary">Update Record</button>
+  <input type="submit" class="btn btn-primary" value="Update Record">
 </form>
 {{end}}

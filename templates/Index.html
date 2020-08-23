@@ -4,10 +4,10 @@
         <tr class="text-center">
             <th scope="col">ID</th>
             <th scope="col">Name</th>
-            <th scope="col">Type</th>
+            <th scope="col">Order Type</th>
             <th scope="col">Address</th>
             <th scope="col">Phone</th>
-            <th scope="col">Time</th>
+            <th scope="col">Order Time</th>
             <th scope="col">Notes</th>
             <th scope="col">Files</th>
         </tr>
@@ -18,8 +18,8 @@
     <tr id="{{$record.ID}}" class="text-center">
         <td><b>{{$record.ID}}</b>
               <br /> 
-              <a href="/records/edit/{{$record.ID}}"><button>E</button></a>
-              <button onclick="deleteRecord({{$record.ID}})">X</button>
+              <a href="/records/edit/{{$record.ID}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+              <a href="javascript:deleteRecord({{$record.ID}});"><i class="fa fa-trash" aria-hidden="true"></i></a>
 
           </td>
           <td>{{$record.Lastname}} {{$record.Firstname}}</td>
