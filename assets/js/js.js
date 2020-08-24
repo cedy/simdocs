@@ -14,7 +14,7 @@ fetch(url, {
 })
 .then(res => res.json()) 
 .then((res) => {
-    if(res["deleted"]) {
+    if(res["success"]) {
         $("#" + recordId).hide();
     } else {
     alert("Something went wrong, couldn't delete the record");
@@ -29,7 +29,7 @@ fetch(url, {
 })
 .then(res => res.json()) 
 .then((res) => {
-    if(res["deleted"]) {
+    if(res["success"]) {
         $("#" + fileId).hide();
     } else {
     alert("Something went wrong, couldn't delete the file");
@@ -52,6 +52,26 @@ function editForm() {
         alert("Record updated.");
         location.reload();
      })
+        .catch((err) => {
+        alert(err);
+        })
+};
+
+function createRecordForm() {
+  var data = new FormData($("#createRecordForm")[0])
+  fetch('/records/create', {
+    method: 'POST',
+    body: data
+  })
+        .then(res => {
+            if (!res.ok) {
+                throw new Error("Error during request.");
+            }
+            return res.json()})
+    .then((res) => {
+        const url = window.location.protocol + "//" + window.location.hostname +":" + window.location.port + "/records/id/" + res["id"]; 
+        location.replace(url);
+    })
         .catch((err) => {
         alert(err);
         })

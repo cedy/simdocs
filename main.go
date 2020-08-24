@@ -45,5 +45,6 @@ func createRenderer() multitemplate.Renderer {
 	r.AddFromFiles("index", "templates/Base.html", "templates/Index.html", "templates/Navbar.html")
 	r.AddFromFiles("create", "templates/Base.html", "templates/Create.html", "templates/Navbar.html")
 	r.AddFromFiles("edit", "templates/Base.html", "templates/Edit.html", "templates/Navbar.html")
+	r.AddFromFiles("record", "templates/Base.html", "templates/Record.html", "templates/Navbar.html")
 	return r
 }

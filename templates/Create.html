@@ -1,5 +1,5 @@
 {{define "content"}}
-<form action="create" method="POST" enctype="multipart/form-data">
+<form id="createRecordForm" onsubmit="createRecordForm(event.preventDefault())" enctype="multipart/form-data">
       <div class="form-row">
     <div class="form-group col-md-5">
       <label for="inputFirstname">Firstname</label>
