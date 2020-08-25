@@ -17,7 +17,12 @@ func GetRecord(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": record})
+	var files []models.File
+	err := models.DB.Where("record_id = ?", record.ID).Find(&files).Error
+	if err != nil {
+		files = append(files, models.File{Name: "error getting files, please try reloading page."})
+	}
+	c.HTML(http.StatusOK, "record", gin.H{"data": record, "files": files})
 }
 
 // GetAllRecords renders page with all records
@@ -64,7 +69,7 @@ func CreateRecord(c *gin.Context) {
 		models.DB.Create(&f)
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": record})
+	c.JSON(http.StatusOK, gin.H{"success": true, "id": record.ID})
 }
 
 //CreateRecordForm renders create record form
@@ -137,10 +142,10 @@ func UpdateRecord(c *gin.Context) {
 		f.RecordID = record.ID
 		models.DB.Create(&f)
 	}
-	c.JSON(http.StatusOK, gin.H{"data": updatedRecord})
+	c.JSON(http.StatusOK, gin.H{"success": true})
 }
 
-//DeleteRecord deletes record at the given ID
+//DeleteRecord deletes record at the given ID and all files attached to that record
 func DeleteRecord(c *gin.Context) {
 	var record models.Record
 	if err := models.DB.Where("id = ?", c.Param("id")).First(&record).Error; err != nil {
@@ -148,14 +153,20 @@ func DeleteRecord(c *gin.Context) {
 		return
 	}
 
+	var files []models.File
+	models.DB.Where("record_id = ?", record.ID).Find(&files)
 	if models.DB.Delete(&record).Error != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "DB error!"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"deleted": true})
+	for _, file := range files {
+		models.DB.Delete(&file)
+		os.Remove(file.Path)
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true})
 }
 
-//DeleteFile deletes file and DB record for given FileID
+//DeleteFile deletes file and DB file record for given FileID
 func DeleteFile(c *gin.Context) {
 	var file models.File
 	if err := models.DB.Where("id = ?", c.Param("id")).First(&file).Error; err != nil {
@@ -170,5 +181,5 @@ func DeleteFile(c *gin.Context) {
 	// TODO: rethink this behavior
 	// ignore an error if file can't be deleted for any reason.
 	_ = os.Remove(file.Path)
-	c.JSON(http.StatusOK, gin.H{"deleted": true})
+	c.JSON(http.StatusOK, gin.H{"success": true})
 }

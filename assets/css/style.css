@@ -10,6 +10,23 @@
     }
 }
 
+div.dataTables_wrapper  div.dataTables_filter {
+  width: 100%;
+  float: none;
+  text-align: center;
+}
+.navbar-nav {
+    float:none;
+    margin:0 auto;
+    display: block;
+    text-align: center;
+}
+
+.navbar-nav > li {
+    display: inline-block;
+    float:none;
+}
+
 .hidden {
     display: none;
 }

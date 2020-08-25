@@ -1,5 +1,5 @@
 {{define "content"}}
-<form class="container">
+<form class="container" onsubmit="event.preventDefault();">
     <input type="hidden" name="id" value="{{.data.ID}}" />
       <div class="form-row">
     <div class="form-group col-md-5">
@@ -37,7 +37,8 @@
   </div>
 <span class='label label-info' id="upload-file-info">
     {{range .files}}
-    <span id="{{.ID}}"><br />{{.Name}}</span>
+    <a href="/{{.Path}}">{{.Name}}</a>
+    <br />
     {{end}}
 </span>
   <div class="form-group">
@@ -45,7 +46,9 @@
     <label for="inputNotes">Notes</label>
     <textarea class="form-control" name="Notes" id="inputNotes" rows="2" disabled>{{.data.Notes}}</textarea>
   </div>
-  <a href=""><button>Edit</button></a>
-  <a href=""><button>Delete</button></a>
 </form>
+  <div class="text-center">
+      <a href="/records/edit/{{.data.ID}}"><button class="btn btn-primary mr-4">Edit</button></a>
+      <a href="javascript:deleteRecord({{.data.ID}});window.location.replace('/records');"><button class="btn btn-danger">Delete</button></a>
+  </div>
 {{end}}

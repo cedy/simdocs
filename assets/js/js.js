@@ -1,3 +1,7 @@
+$(document).ready( function () {
+    $('#all_records_table').DataTable();
+} );
+
 function listSelectedFiles() {
     var selectedFiles = "<br />";
     const files = $('#inputFiles').prop('files');
