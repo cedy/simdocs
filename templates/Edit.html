@@ -13,9 +13,9 @@
     <div class="form-group col-md-2">
       <label for="inputOrderType">OrderType</label>
       <select id="inputOrderType" name="OrderType" class="form-control">
-        <option value="Windows">Windows</option>
-        <option value="Doors">Doors</option>
-        <option value="Misc">Miscellaneous</option>
+         {{range $orderType := .orderTypes}}
+         <option value="{{$orderType}}" {{if eq $orderType $.data.OrderType}}selected{{end}}>{{$orderType}}</option>
+         {{end}}
       </select>
     </div>
   </div>

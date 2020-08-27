@@ -74,7 +74,7 @@ func CreateRecord(c *gin.Context) {
 
 //CreateRecordForm renders create record form
 func CreateRecordForm(c *gin.Context) {
-	c.HTML(http.StatusOK, "create", gin.H{})
+	c.HTML(http.StatusOK, "create", gin.H{"data": models.OrderTypes})
 }
 
 //GetRecordsSearch returns record(s) filtered by querying params*
@@ -104,7 +104,7 @@ func EditRecordForm(c *gin.Context) {
 	if err != nil {
 		files = append(files, models.File{Name: "error getting files, please try reloading page."})
 	}
-	c.HTML(http.StatusOK, "edit", gin.H{"data": record, "files": files})
+	c.HTML(http.StatusOK, "edit", gin.H{"data": record, "files": files, "orderTypes": models.OrderTypes})
 }
 
 //UpdateRecord updates record at the given ID

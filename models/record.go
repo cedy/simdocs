@@ -19,6 +19,8 @@ type Record struct {
 	Notes     string    `form:"Notes" json:"Notes" gorm:"size:1000"`
 }
 
+var OrderTypes = []string{"Windows", "Doors", "Miscellaneous", "Service"}
+
 //File is representation of file in database
 type File struct {
 	ID       uint `gorm:"primary_key"`
