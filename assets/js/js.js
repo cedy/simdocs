@@ -1,5 +1,8 @@
 $(document).ready( function () {
-    $('#all_records_table').DataTable();
+    $('#all_records_table').DataTable(
+        {
+            "order": [[5, "desc"], [1, "asc"]]
+        });
 } );
 
 function listSelectedFiles() {
