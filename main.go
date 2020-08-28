@@ -9,6 +9,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var user, password string
+
 func init() {
 	if _, err := os.Stat("docs"); os.IsNotExist(err) {
 		err := os.Mkdir("docs", 0755)
@@ -16,26 +18,36 @@ func init() {
 			panic(err)
 		}
 	}
+	if len(os.Args) == 3 {
+		user = os.Args[1]
+		password = os.Args[2]
+	}
 }
 
 func main() {
 	r := gin.Default()
+	auth := r.Group("/")
+	if user != "" {
+		auth = r.Group("/", gin.BasicAuth(gin.Accounts{
+			user: password,
+		}))
+	}
 	models.ConnectDataBase()
 	// templates, static and uploaded files
-	r.Static("/css", "./assets/css")
-	r.Static("/js", "./assets/js")
-	r.Static("/docs", "./docs")
+	auth.Static("/css", "./assets/css")
+	auth.Static("/js", "./assets/js")
+	auth.Static("/docs", "./docs")
 	r.HTMLRender = createRenderer()
 	// CRUD routes
-	r.GET("/records/id/:id", controllers.GetRecord)
-	r.GET("/records", controllers.GetAllRecords)
-	r.GET("/records/create", controllers.CreateRecordForm)
-	r.POST("/records/create", controllers.CreateRecord)
-	r.GET("/records/search", controllers.GetRecordsSearch)
-	r.GET("/records/edit/:id", controllers.EditRecordForm)
-	r.PUT("/records/edit", controllers.UpdateRecord)
-	r.DELETE("/records/:id", controllers.DeleteRecord)
-	r.DELETE("/files/:id", controllers.DeleteFile)
+	auth.GET("/records/id/:id", controllers.GetRecord)
+	auth.GET("/records", controllers.GetAllRecords)
+	auth.GET("/records/create", controllers.CreateRecordForm)
+	auth.POST("/records/create", controllers.CreateRecord)
+	auth.GET("/records/search", controllers.GetRecordsSearch)
+	auth.GET("/records/edit/:id", controllers.EditRecordForm)
+	auth.PUT("/records/edit", controllers.UpdateRecord)
+	auth.DELETE("/records/:id", controllers.DeleteRecord)
+	auth.DELETE("/files/:id", controllers.DeleteFile)
 	r.Run()
 
 }
