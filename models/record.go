@@ -19,7 +19,7 @@ type Record struct {
 	Notes     string    `form:"Notes" json:"Notes" gorm:"size:1000"`
 }
 
-var OrderTypes = []string{"Windows", "Doors", "Miscellaneous", "Service"}
+var OrderTypes = []string{"DBepi Bxidni", "DBepi kimnatni", "Bikna metaloplastuk", "Poletu/Zaluzi", "Pidvikonnya", "Mebli", "Inshe"}
 
 //File is representation of file in database
 type File struct {
