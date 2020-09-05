@@ -15,6 +15,10 @@ for (i = 0; i < files.length; i++) {
 }
 
 function deleteRecord(recordId) {
+    var deleteConfirmed = confirm("Do you really want to delete record # " + recordId + " ?");
+    if (deleteConfirmed == false) {
+        return false;
+    }
     const url = window.location.protocol + "//" + window.location.hostname +":" + window.location.port + "/records/" + recordId 
 fetch(url, {
   method: 'DELETE',
