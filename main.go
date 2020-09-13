@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var user, password string
+var user, password, port string
 
 func init() {
 	if _, err := os.Stat("docs"); os.IsNotExist(err) {
@@ -18,9 +18,12 @@ func init() {
 			panic(err)
 		}
 	}
-	if len(os.Args) == 3 {
+	if len(os.Args) >= 3 {
 		user = os.Args[1]
 		password = os.Args[2]
+		if len(os.Args) >= 4 {
+			port = ":" + os.Args[3]
+		}
 	}
 }
 
@@ -48,7 +51,7 @@ func main() {
 	auth.PUT("/records/edit", controllers.UpdateRecord)
 	auth.DELETE("/records/:id", controllers.DeleteRecord)
 	auth.DELETE("/files/:id", controllers.DeleteFile)
-	r.Run()
+	r.Run(port)
 
 }
 
