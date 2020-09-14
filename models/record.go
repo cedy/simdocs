@@ -10,7 +10,7 @@ import (
 type Record struct {
 	gorm.Model
 	Lastname  string    `form:"Lastname" json:"Lastname" binding:"required" gorm:"index:add;size:255"`
-	Firstname string    `form:"Firstname" json:"Firstname" binding:"required" gorm:"size:255"`
+	Firstname string    `form:"Firstname" json:"Firstname" gorm:"size:255"`
 	OrderType string    `form:"OrderType" json:"OrderType" binding:"required" gorm:"size:255"`
 	Address   string    `form:"Address" json:"Address"`
 	Phone     string    `form:"Phone" json:"Phone" binding:"required" `
