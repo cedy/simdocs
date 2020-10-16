@@ -10,6 +10,6 @@ For example, to have it password protected and run it on port 8888 start the app
 ```
 ./main my_username my_secret_password 8888
 ```
-You will be able to access the page at http://host_ip/records/
+You will be able to access the page at http://host_ip:8888/records/
 
 If executed without args, application will run on port 8080 without basic authorization. 
